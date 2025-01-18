@@ -1,7 +1,0 @@
-# requirements.txt
-Django==5.0.1
-google-cloud-storage==2.14.0
-google-cloud-dlp==3.12.2
-python-dotenv==1.0.0
-channels==4.0.0
-django-storages==1.14.2
