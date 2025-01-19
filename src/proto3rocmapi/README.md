@@ -55,8 +55,4 @@ cmake ..
 make
 ```
 
-Would you like me to:
-1. Add CGO bindings for the HIP wrapper?
-2. Implement specific AI model integration?
-3. Add error handling and recovery mechanisms?
-4. Add configuration management?
+
