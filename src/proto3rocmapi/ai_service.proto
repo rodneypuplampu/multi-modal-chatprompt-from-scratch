@@ -1,0 +1,41 @@
+// proto/ai_service.proto
+syntax = "proto3";
+
+package aiservice;
+option go_package = "github.com/yourusername/aibridge/proto";
+
+service AIService {
+  // Send input data for processing
+  rpc ProcessData (ProcessRequest) returns (ProcessResponse) {}
+  
+  // Get GPU device information
+  rpc GetDeviceInfo (DeviceInfoRequest) returns (DeviceInfoResponse) {}
+  
+  // Stream results for long-running operations
+  rpc StreamResults (ProcessRequest) returns (stream ProcessResponse) {}
+}
+
+message ProcessRequest {
+  bytes input_data = 1;
+  string model_type = 2;
+  map<string, string> parameters = 3;
+}
+
+message ProcessResponse {
+  bytes output_data = 1;
+  float computation_time = 2;
+  string error_message = 3;
+}
+
+message DeviceInfoRequest {}
+
+message DeviceInfoResponse {
+  repeated GPUDevice devices = 1;
+}
+
+message GPUDevice {
+  string name = 1;
+  string arch = 2;
+  int64 memory_mb = 3;
+  double compute_capability = 4;
+}
