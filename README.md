@@ -1,6 +1,6 @@
-# Complete NLP Vector Search RAG System
+# Complete Local Installable NLP Vector Search RAG System
 
-This repository contains a comprehensive Retrieval-Augmented Generation (RAG) system built on natural language processing, vector embeddings, and semantic search capabilities. The system processes unstructured text data, structures it with relationship information, and enables efficient semantic search through vector embeddings.
+This repository contains a comprehensive Retrieval-Augmented Generation (RAG) system built on natural language processing, vector embeddings, and semantic search capabilities. The system processes unstructured text data, structures it with relationship information as a vector database, and enables efficient semantic search through vector embeddings.  All open source software used to develop this software can be loaded on a lingle air-gapped machine and functionally operate with no APIs or connectivity to larger LLM model providers.
 
 ## System Architecture
 
