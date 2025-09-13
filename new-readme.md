@@ -69,15 +69,6 @@ KK --> LL[spaCy: Update models Entity/intent recognition]
 LL --> MM[System Learning Complete Models updated]
 
 %% Styling
-classDef userStyle fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
-classDef spacyStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
-classDef tensorStyle fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
-classDef gemmaStyle fill:#fff3e0,stroke:#f57c00,stroke-width:2px
-classDef lanceStyle fill:#fce4ec,stroke:#c2185b,stroke-width:2px
-classDef bertStyle fill:#e0f2f1,stroke:#00695c,stroke-width:2px
-classDef llmStyle fill:#f1f8e9,stroke:#558b2f,stroke-width:2px
-classDef decisionStyle fill:#ffecb3,stroke:#ffa000,stroke-width:2px
-classDef completeStyle fill:#ffcdd2,stroke:#d32f2f,stroke-width:2px
 
 class A,CC,FF userStyle
 class B,D,LL spacyStyle
