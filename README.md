@@ -26,7 +26,7 @@ graph TB
 |-----------|----------|------------------|
 | LanceDB | Unified data stack (cache + archive) | Scalable storage for millions of  documents |
 | spaCy | Text preprocessing & NER | Extract entities (account numbers, SSNs, regulations) |
-| BERTopic + EmbeddingGemma | Semantic embedding generation | Understand financial terminology and context |
+| BERTopic + EmbeddingGemma | Semantic embedding generation | Understand  terminology and context |
 | Gemma | Local LLM for generation | Generate compliance reports and risk assessments |
 | TensorFlow | ML runtime & on-device training | Continuous learning from new  documents |
 
@@ -138,11 +138,11 @@ class DocumentProcessor:
 
 ## 🧠 Phase 3: Embedding Generation and Vector Storage
 
-### Step 4: Create Financial Context Embeddings
+### Step 4: Create  Context Embeddings
 
-Implement the `FinancialEmbedder` that converts preprocessed text into vector embeddings and stores them in LanceDB.
+Implement the `Embedder` that converts preprocessed text into vector embeddings and stores them in LanceDB.
 
-Create `src/embeddings/financial_embedder.py`:
+Create `src/embeddings/_embedder.py`:
 
 ```python
 from sentence_transformers import SentenceTransformer
@@ -152,7 +152,7 @@ import lancedb
 import pandas as pd
 from typing import List, Dict
 
-class FinancialEmbedder:
+class Embedder:
     def __init__(self, model_name: str = "sentence-transformers/all-MiniLM-L6-v2"):
         self.embedding_model = SentenceTransformer(model_name)
         self.topic_model = BERTopic(embedding_model=self.embedding_model)
@@ -513,11 +513,11 @@ echo "🎉 Deployment completed successfully!"
 ### Processing Documents
 ```python
 from src.data_ingestion.document_processor import DocumentProcessor
-from src.embeddings.financial_embedder import FinancialEmbedder
+from src.embeddings._embedder import Embedder
 
 # Process documents
 processor = DocumentProcessor()
-embedder = FinancialEmbedder()
+embedder = Embedder()
 
 # Load and process compliance documents
 chunks = processor.process_compliance_documents(Path("data/documents/compliance.txt"))
