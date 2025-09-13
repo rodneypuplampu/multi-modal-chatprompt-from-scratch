@@ -1,16 +1,16 @@
-# Sovereign AI Banking RAG: Complete Implementation Guide
+# Sovereign AI  RAG: Complete Implementation Guide
 
-A comprehensive step-by-step guide for implementing an Enterprise Banking RAG (Retrieval-Augmented Generation) Analytics Dashboard built on the principle of "Sovereign AI" - maintaining complete control over data and AI-driven intelligence without external cloud dependencies.
+A comprehensive step-by-step guide for implementing an Enterprise  RAG (Retrieval-Augmented Generation) Analytics Dashboard built on the principle of "Sovereign AI" - maintaining complete control over data and AI-driven intelligence without external cloud dependencies.
 
 ## 🎯 Overview
 
-This system processes internal banking documents, embeds them for semantic understanding, stores them in a secure vector database, and generates accurate, context-aware responses through a user-friendly dashboard. All processing happens entirely on-premises, ensuring data sovereignty and maximum security.
+This system processes internal  documents, embeds them for semantic understanding, stores them in a secure vector database, and generates accurate, context-aware responses through a user-friendly dashboard. All processing happens entirely on-premises, ensuring data sovereignty and maximum security.
 
 ### Core Architecture
 
 ```mermaid
 graph TB 
-    A[Banking Documents] --> B[spaCy Preprocessing] 
+    A[ Documents] --> B[spaCy Preprocessing] 
     B --> C[BERTopic + EmbeddingGemma] 
     C --> D[LanceDB Vector Store] 
     D ==> E[Gemma LLM] 
@@ -22,13 +22,13 @@ graph TB
 
 ### Component Overview
 
-| Component | Function | Banking Use Case |
+| Component | Function |  Use Case |
 |-----------|----------|------------------|
-| LanceDB | Unified data stack (cache + archive) | Scalable storage for millions of banking documents |
+| LanceDB | Unified data stack (cache + archive) | Scalable storage for millions of  documents |
 | spaCy | Text preprocessing & NER | Extract entities (account numbers, SSNs, regulations) |
 | BERTopic + EmbeddingGemma | Semantic embedding generation | Understand financial terminology and context |
 | Gemma | Local LLM for generation | Generate compliance reports and risk assessments |
-| TensorFlow | ML runtime & on-device training | Continuous learning from new banking documents |
+| TensorFlow | ML runtime & on-device training | Continuous learning from new  documents |
 
 ## 📋 Prerequisites
 
@@ -48,8 +48,8 @@ Set up a local Python environment and install all required dependencies. This cr
 
 ```bash
 # Create virtual environment
-python -m venv banking-rag-env
-source banking-rag-env/bin/activate  # On Windows: banking-rag-env\Scripts\activate
+python -m venv -rag-env
+source -rag-env/bin/activate  # On Windows: -rag-env\Scripts\activate
 
 # Install dependencies
 pip install lancedb spacy bertopic tensorflow transformers streamlit pandas torch sentence-transformers
@@ -63,7 +63,7 @@ python -m spacy download en_core_web_lg
 Create a modular project structure that separates concerns like data ingestion, embedding, and retrieval.
 
 ```
-banking-rag-dashboard/
+-rag-dashboard/
 ├── src/
 │   ├── data_ingestion/
 │   ├── embeddings/
@@ -71,7 +71,7 @@ banking-rag-dashboard/
 │   ├── generation/
 │   └── dashboard/
 ├── data/
-│   ├── documents/        # Raw banking documents
+│   ├── documents/        # Raw  documents
 │   ├── embeddings/       # LanceDB vector store
 │   └── models/           # Local model cache
 ├── config/
@@ -86,7 +86,7 @@ banking-rag-dashboard/
 
 ### Step 3: Implement Document Processing with spaCy
 
-Create the `BankingDocumentProcessor` that uses spaCy to ingest raw text, perform named entity recognition (NER), and segment text into semantically meaningful chunks.
+Create the `DocumentProcessor` that uses spaCy to ingest raw text, perform named entity recognition (NER), and segment text into semantically meaningful chunks.
 
 Create `src/data_ingestion/document_processor.py`:
 
@@ -97,7 +97,7 @@ import pandas as pd
 from pathlib import Path
 from typing import List, Dict
 
-class BankingDocumentProcessor:
+class DocumentProcessor:
     def __init__(self, lance_db_path: str = "./data/embeddings"):
         self.nlp = spacy.load("en_core_web_lg")
         self.db = lancedb.connect(lance_db_path)
@@ -132,7 +132,7 @@ class BankingDocumentProcessor:
         return compliance_chunks
 ```
 
-**Strategic Summary:** This stage prepares raw text for intelligence extraction. By identifying and labeling specific banking entities, you add a layer of contextual understanding from the start, making subsequent retrieval more accurate and relevant.
+**Strategic Summary:** This stage prepares raw text for intelligence extraction. By identifying and labeling specific  entities, you add a layer of contextual understanding from the start, making subsequent retrieval more accurate and relevant.
 
 ---
 
@@ -166,7 +166,7 @@ class FinancialEmbedder:
             doc['topic_id'] = topics[i]
             doc['embedding'] = embeddings[i]
     
-    def store_in_lancedb(self, documents: List[Dict], table_name: str = "banking_documents"):
+    def store_in_lancedb(self, documents: List[Dict], table_name: str = "_documents"):
         db = lancedb.connect("./data/embeddings")
         df_data = pd.DataFrame(documents)
         df_data['vector'] = df_data['embedding'].apply(lambda x: x.tolist())
@@ -181,7 +181,7 @@ class FinancialEmbedder:
 
 ### Step 5: Implement Intelligent Retrieval System
 
-Create the `BankingRAGRetriever` for high-speed semantic searches on the LanceDB vector store.
+Create the `RAGRetriever` for high-speed semantic searches on the LanceDB vector store.
 
 Create `src/retrieval/lance_retriever.py`:
 
@@ -190,14 +190,14 @@ import lancedb
 from sentence_transformers import SentenceTransformer
 from typing import List, Dict, Optional
 
-class BankingRAGRetriever:
+class RAGRetriever:
     def __init__(self, db_path: str = "./data/embeddings"):
         self.db = lancedb.connect(db_path)
         self.embedding_model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
     
     def semantic_search(self, 
                        query: str, 
-                       table_name: str = "banking_documents", 
+                       table_name: str = "_documents", 
                        top_k: int = 5, 
                        security_filter: Optional[str] = None) -> List[Dict]:
         
@@ -242,24 +242,24 @@ class GemmaGenerator:
         """
         
         # Replace with actual model inference
-        return f"Based on the context provided, the answer to '{query}' is generated using the banking documents context."
+        return f"Based on the context provided, the answer to '{query}' is generated using the  documents context."
 ```
 
 Create `src/dashboard/streamlit_app.py`:
 
 ```python
 import streamlit as st
-from src.retrieval.lance_retriever import BankingRAGRetriever
+from src.retrieval.lance_retriever import RAGRetriever
 from src.generation.gemma_generator import GemmaGenerator
 
 @st.cache_resource
 def initialize_system():
-    retriever = BankingRAGRetriever()
+    retriever = RAGRetriever()
     generator = GemmaGenerator()
     return retriever, generator
 
-st.set_page_config(page_title="Banking RAG Dashboard", layout="wide")
-st.title("🏦 Enterprise Banking RAG Analytics Dashboard")
+st.set_page_config(page_title=" RAG Dashboard", layout="wide")
+st.title("🏦 Enterprise  RAG Analytics Dashboard")
 
 retriever, generator = initialize_system()
 
@@ -270,7 +270,7 @@ with st.sidebar:
     security_filter = st.selectbox("Security Level", ["All", "confidential", "internal", "public"])
 
 # Main interface
-query = st.text_area("Enter your query about banking documents:", height=100)
+query = st.text_area("Enter your query about  documents:", height=100)
 
 if st.button("Generate Answer", type="primary"):
     if query:
@@ -307,7 +307,7 @@ if st.button("Generate Answer", type="primary"):
 
 # Footer
 st.markdown("---")
-st.markdown("*Sovereign AI Banking RAG - Secure, Private, On-Premises Intelligence*")
+st.markdown("*Sovereign AI  RAG - Secure, Private, On-Premises Intelligence*")
 ```
 
 **Strategic Summary:** The entire pipeline is designed to be fully local, fast, and private. Gemma generates responses that are "grounded" in the retrieved documents, ensuring answers are based on the enterprise's own data, fulfilling the core vision of Sovereign AI.
@@ -320,13 +320,13 @@ st.markdown("*Sovereign AI Banking RAG - Secure, Private, On-Premises Intelligen
 
 #### Configuration Management
 
-Create `config/banking_config.yaml`:
+Create `config/_config.yaml`:
 
 ```yaml
-# Banking RAG Configuration
+#  RAG Configuration
 database:
   lance_db_path: "./data/embeddings"
-  table_name: "banking_documents"
+  table_name: "_documents"
 
 models:
   embedding_model: "sentence-transformers/all-MiniLM-L6-v2"
@@ -337,7 +337,7 @@ security:
   audit_logging: true
 
 compliance:
-  data_retention_days: 2555  # 7 years for banking
+  data_retention_days: 2555  # 7 years for 
   gdpr_compliant: true
 
 performance:
@@ -346,7 +346,7 @@ performance:
   
 logging:
   level: "INFO"
-  file_path: "./logs/banking_rag.log"
+  file_path: "./logs/_rag.log"
 ```
 
 #### Container Deployment
@@ -412,7 +412,7 @@ Create `docker-compose.yml`:
 version: '3.8'
 
 services:
-  banking-rag:
+  -rag:
     build: .
     ports:
       - "8501:8501"
@@ -442,16 +442,16 @@ sudo ufw enable
 sudo ufw allow 8501  # Streamlit port
 
 # Set up SSL/TLS (replace with your domain)
-# sudo certbot --nginx -d banking-rag.yourbank.com
+# sudo certbot --nginx -d -rag.yourbank.com
 
 # Set proper file permissions
-chmod 600 config/banking_config.yaml
+chmod 600 config/_config.yaml
 chmod -R 750 src/
 chmod -R 700 data/
 
 # Create restricted user for running the service
-sudo useradd -r -s /bin/false banking-rag
-sudo chown -R banking-rag:banking-rag /app
+sudo useradd -r -s /bin/false -rag
+sudo chown -R -rag:-rag /app
 
 echo "Security hardening completed!"
 ```
@@ -463,7 +463,7 @@ Create `deploy.sh`:
 ```bash
 #!/bin/bash
 
-echo "🚀 Deploying Sovereign AI Banking RAG System..."
+echo "🚀 Deploying Sovereign AI  RAG System..."
 
 # Build and start the containers
 docker-compose up --build -d
@@ -474,7 +474,7 @@ sleep 30
 
 # Check if service is running
 if curl -f http://localhost:8501/_stcore/health; then
-    echo "✅ Banking RAG Dashboard is running at http://localhost:8501"
+    echo "✅  RAG Dashboard is running at http://localhost:8501"
 else
     echo "❌ Deployment failed. Check logs with: docker-compose logs"
     exit 1
@@ -483,7 +483,7 @@ fi
 echo "🎉 Deployment completed successfully!"
 ```
 
-**Strategic Summary:** This final phase operationalizes the Sovereign AI system. Configuration management allows fine-tuning of security and performance parameters. Container deployment ensures consistency across environments, and security hardening is paramount in banking contexts.
+**Strategic Summary:** This final phase operationalizes the Sovereign AI system. Configuration management allows fine-tuning of security and performance parameters. Container deployment ensures consistency across environments, and security hardening is paramount in  contexts.
 
 ---
 
@@ -492,7 +492,7 @@ echo "🎉 Deployment completed successfully!"
 1. **Clone and Setup:**
    ```bash
    git clone <your-repo>
-   cd banking-rag-dashboard
+   cd -rag-dashboard
    chmod +x deploy.sh security_setup.sh
    ```
 
@@ -505,18 +505,18 @@ echo "🎉 Deployment completed successfully!"
    Open http://localhost:8501 in your browser
 
 4. **Add Documents:**
-   - Place banking documents in `data/documents/`
+   - Place  documents in `data/documents/`
    - Run the ingestion pipeline to process and embed documents
 
 ## 📖 Usage Examples
 
 ### Processing Documents
 ```python
-from src.data_ingestion.document_processor import BankingDocumentProcessor
+from src.data_ingestion.document_processor import DocumentProcessor
 from src.embeddings.financial_embedder import FinancialEmbedder
 
 # Process documents
-processor = BankingDocumentProcessor()
+processor = DocumentProcessor()
 embedder = FinancialEmbedder()
 
 # Load and process compliance documents
@@ -529,9 +529,9 @@ embedder.store_in_lancedb(chunks)
 
 ### Querying the System
 ```python
-from src.retrieval.lance_retriever import BankingRAGRetriever
+from src.retrieval.lance_retriever import RAGRetriever
 
-retriever = BankingRAGRetriever()
+retriever = RAGRetriever()
 results = retriever.semantic_search("What are the KYC requirements for new accounts?")
 ```
 
@@ -567,6 +567,6 @@ results = retriever.semantic_search("What are the KYC requirements for new accou
 
 ## 📄 License
 
-This project is designed for enterprise banking environments with appropriate security and compliance considerations. Ensure all usage complies with your organization's data governance policies.
+This project is designed for enterprise  environments with appropriate security and compliance considerations. Ensure all usage complies with your organization's data governance policies.
 
 **Built with Sovereign AI principles - Your data, your intelligence, your control.**
