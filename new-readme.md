@@ -8,7 +8,87 @@ The system consists of four main components that work together:
 ## How the Components Work Together
 
 ### Data Processing Pipeline
+```mermaid
+flowchart TD
+%% Query Initialization & Analysis Phase
+A[User Natural Language Query Direct/Multi-Step/Complex] --> B[spaCy NLP Processing Parse entities, syntax, intent]
+B --> C{Analysis Complete?}
+C -->|No| D[spaCy: Expand semantic analysis Enhanced entities & context]
+D --> E[TensorFlow: Build reasoning graph Identify logic gaps]
+E --> F[Request additional context Missing entities/relationships]
+F --> D
+C -->|Yes| G[Send structured analysis Entities, relationships, intent]
 
+%% Embedding & Retrieval Phase
+G --> H[TensorFlow: Process query bundle Structured + context]
+H --> I[Gemma: Generate embeddings Dense vectors + validation]
+I --> J{Embedding Quality OK?}
+J -->|No| K[TensorFlow: Refinement request Optimize for similarity search]
+K --> I
+J -->|Yes| L[LanceDB: Receive embeddings 768/1024/1536 dimensions]
+
+L --> M[LanceDB: ANN Search Rank by cosine similarity]
+M --> N{Search Results Satisfactory?}
+N -->|No| O[Gemma: Adjust parameters Modify k, threshold, filters]
+O --> M
+N -->|Yes| P[Send ranked documents Metadata + embeddings + scores]
+
+%% Template Generation & Response Phase
+P --> Q[BERTopic: Extract topics Build context hierarchy]
+Q --> R{Context Relevance OK?}
+R -->|No| S[Validate document relevance Topic coherence check]
+S --> M
+R -->|Yes| T[Generate prompt template Context + instructions + examples]
+
+T --> U[LLM: Generate response Assess initial quality]
+U --> V{Prompt Optimization Needed?}
+V -->|Yes| W[BERTopic: Enhance template Improve context ordering]
+W --> U
+V -->|No| X{Reasoning Validation Needed?}
+
+X -->|Yes| Y[TensorFlow: Logic check Consistency validation]
+Y --> Z{Logic Valid?}
+Z -->|No| AA[Provide reasoning suggestions Framework adjustments]
+AA --> U
+Z -->|Yes| BB[Generate final response Answer + sources + confidence]
+X -->|No| BB
+
+%% Output & Feedback Phase
+BB --> CC[User receives response Comprehensive output]
+CC --> DD{User provides feedback?}
+DD -->|No| EE[Process Complete]
+DD -->|Yes| FF[Collect user feedback Rating, corrections, follow-up]
+
+%% Learning Propagation
+FF --> GG[LLM: Update effectiveness Prompt performance metrics]
+GG --> HH[BERTopic: Update patterns Template optimization data]
+HH --> II[LanceDB: Update retrieval Successful query patterns]
+II --> JJ[Gemma: Update preferences Vector pattern optimization]
+JJ --> KK[TensorFlow: Update weights Logic pattern improvements]
+KK --> LL[spaCy: Update models Entity/intent recognition]
+LL --> MM[System Learning Complete Models updated]
+
+%% Styling
+classDef userStyle fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+classDef spacyStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+classDef tensorStyle fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
+classDef gemmaStyle fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+classDef lanceStyle fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+classDef bertStyle fill:#e0f2f1,stroke:#00695c,stroke-width:2px
+classDef llmStyle fill:#f1f8e9,stroke:#558b2f,stroke-width:2px
+classDef decisionStyle fill:#ffecb3,stroke:#ffa000,stroke-width:2px
+classDef completeStyle fill:#ffcdd2,stroke:#d32f2f,stroke-width:2px
+
+class A,CC,FF userStyle
+class B,D,LL spacyStyle
+class E,H,Y,KK tensorStyle
+class I,O,JJ gemmaStyle
+class L,M,S,II lanceStyle
+class Q,W,HH bertStyle
+class U,GG llmStyle
+class C,J,N,R,V,X,Z,DD decisionStyle
+class EE,MM completeStyle
+```
 ```
 Raw Text → Clean Text → Structured Data → Vector Embeddings → Search Interface
 ```
