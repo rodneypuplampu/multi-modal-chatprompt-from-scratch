@@ -23,39 +23,54 @@ Raw Text → Clean Text → Structured Data → Vector Embeddings → Search Int
 ```mermaid
 sequenceDiagram
     participant User as User Query
-    participant spaCy as Query Analyzer
-    participant TensorFlow as Reasoning Chain
-    participant Gemma as Embedding
-    participant LanceDB as Vector DB
-    participant BERTopic as Prompt Template
-    participant LLM as LLM
+    participant spaCy as Query Analyzer<br/>(NLP Processing)
+    participant TensorFlow as Reasoning Chain<br/>(Logic Framework)
+    participant Gemma as Embedding Model<br/>(Vector Generation)
+    participant LanceDB as Vector Database<br/>(Similarity Search)
+    participant BERTopic as Prompt Template<br/>(Context Builder)
+    participant LLM as Large Language Model<br/>(Response Generation)
     
-    User->>spaCy: Direct/Multi-Step Query
-    spaCy->>TensorFlow: Analyzed Query
-    TensorFlow-->>spaCy: Reasoning Context Request
-    spaCy->>TensorFlow: Enhanced Analysis
+    Note over User,LLM: Query Initialization & Analysis Phase
+    User->>spaCy: Natural Language Query<br/>(Direct/Multi-Step/Complex)
+    spaCy->>spaCy: Parse entities, syntax,<br/>intent classification
+    spaCy->>TensorFlow: Structured query analysis<br/>(entities, relationships, intent)
+    TensorFlow->>TensorFlow: Build reasoning graph<br/>& identify logic gaps
+    TensorFlow-->>spaCy: Request additional context<br/>(missing entities/relationships)
+    spaCy-->>TensorFlow: Enhanced semantic analysis<br/>(expanded entities, context)
     
-    TensorFlow->>Gemma: Processed Query for Embedding
-    Gemma-->>TensorFlow: Embedding Confirmation
-    TensorFlow->>Gemma: Final Processing Request
-    Gemma->>LanceDB: High-quality Embeddings
+    Note over TensorFlow,LanceDB: Embedding & Retrieval Phase
+    TensorFlow->>Gemma: Processed query bundle<br/>(structured + context)
+    Gemma->>Gemma: Generate dense embeddings<br/>& validate dimensionality
+    Gemma-->>TensorFlow: Embedding quality metrics<br/>(confidence scores)
+    TensorFlow-->>Gemma: Embedding refinement request<br/>(optimize for similarity search)
+    Gemma->>LanceDB: High-dimensional embeddings<br/>(768/1024/1536 vectors)
     
-    LanceDB-->>Gemma: Vector Search Results
-    Gemma-->>LanceDB: Refinement Request
-    LanceDB->>BERTopic: Retrieved Relevant Embeddings
+    LanceDB->>LanceDB: Perform ANN search<br/>& rank by cosine similarity
+    LanceDB-->>Gemma: Initial search results<br/>(top-k candidates + scores)
+    Gemma-->>LanceDB: Search refinement parameters<br/>(adjust k, threshold, filters)
+    LanceDB->>BERTopic: Ranked relevant documents<br/>(metadata + embeddings + scores)
     
-    BERTopic-->>LanceDB: Context Validation
-    LanceDB-->>BERTopic: Validated Context Data
-    BERTopic->>LLM: Formulated Prompt
+    Note over BERTopic,User: Template Generation & Response Phase
+    BERTopic->>BERTopic: Extract topics/themes<br/>& build context hierarchy
+    BERTopic-->>LanceDB: Validate document relevance<br/>(topic coherence check)
+    LanceDB-->>BERTopic: Confirmed context data<br/>(validated documents + metadata)
+    BERTopic->>LLM: Structured prompt template<br/>(context + instructions + examples)
     
-    LLM-->>BERTopic: Prompt Optimization Request
-    BERTopic-->>LLM: Optimized Prompt Template
-    LLM-->>TensorFlow: Reasoning Validation
-    TensorFlow-->>LLM: Validated Response Framework
-    LLM->>User: Final Output
+    LLM->>LLM: Generate initial response<br/>& assess quality
+    LLM-->>BERTopic: Request prompt optimization<br/>(clarity, context balance)
+    BERTopic-->>LLM: Enhanced prompt template<br/>(improved context ordering)
+    LLM-->>TensorFlow: Reasoning validation request<br/>(logical consistency check)
+    TensorFlow-->>LLM: Validated reasoning framework<br/>(logic approval + suggestions)
     
-    User-->>LLM: Feedback (if any)
-    LLM-->>spaCy: Learning Update
+    LLM->>User: Comprehensive response<br/>(answer + sources + confidence)
+    
+    Note over User,spaCy: Feedback & Learning Phase
+    User-->>LLM: User feedback<br/>(rating, corrections, follow-up)
+    LLM-->>BERTopic: Update template effectiveness<br/>(prompt performance metrics)
+    BERTopic-->>LanceDB: Update retrieval patterns<br/>(successful query patterns)
+    LanceDB-->>Gemma: Update embedding preferences<br/>(successful vector patterns)
+    Gemma-->>TensorFlow: Update reasoning weights<br/>(successful logic patterns)
+    TensorFlow-->>spaCy: Update analysis models<br/>(improved entity/intent recognition)
 ```
 ## Component 1: Text Cleaning Utility
 
