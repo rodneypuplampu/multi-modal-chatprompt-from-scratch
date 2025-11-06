@@ -203,7 +203,7 @@ except ImportError:
 2. Create the RAG Function:Implementation Note: The prompt template explicitly instructs the model to rely ONLY on the context, which is crucial for RAG accuracy and preventing hallucinations.Pythondef ask_rag_pipeline(question: str, table, embedding_model):
     if model_gemma is None:
         return "Error: Gemma model is not loaded.", ""
-
+```
     # 1. Retrieve Context (LanceDB)
     query_vector = embedding_model.encode(question)
 
